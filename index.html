@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff7fb">
+<title>Comprog1 Exam</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%BB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2250; --paper:#fff7fb; --pink:#ff7eb6; --lilac:#d4c6ff; --mint:#43d9a0;
+  --coral:#ff5d73; --sun:#ffd666; --code:#241b45;
+  --sans:'Fredoka',ui-rounded,'SF Pro Rounded',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:70px}
+body{
+  margin:0;font-family:var(--sans);font-size:17px;line-height:1.45;color:var(--ink);
+  background-color:var(--paper);
+  background-image:radial-gradient(#ead9ff 1.4px,transparent 1.4px);background-size:20px 20px;
+  min-height:100vh;
+}
+button,input{font-family:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.screen{display:none;max-width:600px;margin:0 auto;padding:16px}
+.screen.on{display:block}
+pre{margin:0;font-family:var(--mono)}
+
+/* Buttons */
+.btn{
+  display:block;width:100%;font-weight:700;font-size:19px;padding:15px 18px;cursor:pointer;
+  background:var(--pink);border:2.5px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 var(--ink);
+  transition:transform .08s,box-shadow .08s;
+}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{background:#ece6f8;color:#9a8fc0;border-color:#b9acd9;box-shadow:0 5px 0 #b9acd9;cursor:not-allowed}
+.btn.alt{background:#fff}
+.link{background:none;border:0;padding:6px 0;font-weight:600;font-size:16px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-top:6px}
+
+/* Cards and code windows */
+.card{background:#fff;border:2.5px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding:18px}
+.win{background:var(--code);border-radius:14px;margin:14px 0;overflow:hidden;border:2.5px solid var(--ink)}
+.win .dots{display:flex;gap:6px;padding:9px 12px;background:#352a63}
+.win .dots i{width:11px;height:11px;border-radius:50%;background:var(--coral)}
+.win .dots i:nth-child(2){background:var(--sun)}
+.win .dots i:nth-child(3){background:var(--mint)}
+.win pre,.win .lines{padding:14px;color:#efeaff;font-size:14.5px;line-height:1.9;overflow-x:auto;white-space:pre}
+
+/* Start screen */
+.hero{padding-top:max(22px,env(safe-area-inset-top))}
+.hero h1{font-size:44px;line-height:1.05;margin:6px 0 6px;font-weight:700}
+.hero p{margin:0 0 4px}
+.sub{font-size:18px;font-weight:500}
+.kw{color:var(--pink)} .fn{color:#7ee7ff} .str{color:var(--sun)}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+.facts span{background:var(--lilac);border:2.5px solid var(--ink);border-radius:999px;padding:4px 13px;font-weight:600;font-size:15px}
+.tip{font-size:15px;opacity:.8;margin:14px 2px 0}
+
+/* Quiz screen */
+.top{
+  position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:max(10px,env(safe-area-inset-top)) 16px 10px;
+  background:var(--paper);border-bottom:2.5px solid var(--ink);
+}
+.top .x{flex:none;width:38px;height:38px;border-radius:12px;border:2.5px solid var(--ink);background:#fff;font-size:17px;font-weight:700;cursor:pointer}
+.bar{flex:1;height:16px;border:2.5px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--mint);border-right:2.5px solid var(--ink);transition:width .35s}
+#count{flex:none;font-weight:700;font-size:16px;min-width:46px;text-align:right}
+#quiz .wrap{max-width:600px;margin:0 auto;padding:16px 16px 130px}
+.part{display:inline-flex;gap:8px;align-items:center;background:var(--sun);border:2.5px solid var(--ink);border-radius:999px;padding:3px 14px 3px 10px;font-weight:600;font-size:15px}
+.q{font-size:22px;line-height:1.3;margin:14px 0 4px;font-weight:600;white-space:pre-line}
+.how{margin:2px 0 0;font-size:15px;opacity:.8}
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--paper);border-top:2.5px solid var(--ink);
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+}
+.dock .btn{max-width:568px;margin:0 auto}
+
+/* Multiple choice */
+.opts{display:grid;gap:12px;margin-top:16px}
+.opt{
+  display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;cursor:pointer;
+  background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:12px 14px;font-size:17px;font-weight:500;
+  box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s;
+}
+.opt b{flex:none;width:30px;height:30px;border-radius:9px;border:2.5px solid var(--ink);background:var(--lilac);display:grid;place-items:center;font-size:15px}
+.opt.sel{background:var(--lilac)}
+.opt.sel b{background:#fff}
+.opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{background:#c9f7e4}
+.opt.right b{background:var(--mint)}
+.opt.wrong{background:#ffd3da}
+.opt.wrong b{background:var(--coral)}
+
+/* Type it */
+.in{
+  width:100%;margin-top:16px;font:700 19px var(--mono);padding:14px;background:#fff;
+  border:2.5px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 var(--ink);
+}
+.in.right{background:#c9f7e4}
+.in.wrong{background:#ffd3da}
+.hintbox{margin-top:6px;font-size:15px;font-weight:500}
+
+/* Drag and drop */
+.slot{
+  display:inline-flex;align-items:center;min-width:68px;min-height:36px;padding:2px;vertical-align:middle;margin:1px 2px;
+  border:2px dashed #9a89ea;border-radius:11px;background:rgba(255,255,255,.07);transition:background .12s,border-color .12s;
+}
+.slot.wide{display:flex;width:100%;min-height:44px;margin:0}
+.slot.active{border-color:var(--sun);background:rgba(255,214,102,.18)}
+.slot.hot{border-color:var(--pink);background:rgba(255,126,182,.3)}
+.slot.filled{border-color:transparent;background:transparent}
+.slot.right{box-shadow:0 0 0 3px var(--mint)}
+.slot.wrong{box-shadow:0 0 0 3px var(--coral)}
+.oline{display:flex;align-items:center;gap:10px;margin:7px 0;line-height:1}
+.oline .n{flex:none;width:22px;text-align:right;color:#9a89ea;font-size:13px}
+.chip{
+  display:inline-block;max-width:100%;font:600 15px/1.25 var(--mono);color:var(--ink);text-align:left;
+  background:#fff;border:2.5px solid var(--ink);border-radius:11px;padding:7px 11px;box-shadow:0 3px 0 var(--ink);
+  white-space:pre-wrap;overflow-wrap:anywhere;cursor:grab;touch-action:none;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+}
+.slot .chip{background:var(--lilac);padding:4px 10px;box-shadow:0 2px 0 var(--ink)}
+.slot.wide .chip{width:100%}
+.chip.lifted{opacity:.3}
+.chip.ghost{position:fixed;left:0;top:0;z-index:999;pointer-events:none;background:var(--sun);rotate:-4deg;box-shadow:0 10px 0 rgba(43,34,80,.25);width:auto}
+.bank{display:flex;flex-wrap:wrap;gap:10px;padding:14px;margin-top:6px;min-height:68px;background:#fff0f7;border:2.5px dashed var(--ink);border-radius:18px}
+.bank .empty{font-size:15px;opacity:.7;align-self:center}
+
+/* Feedback */
+.fb{margin-top:16px;border:2.5px solid var(--ink);border-radius:16px;padding:12px 14px;font-size:16px}
+.fb.good{background:#c9f7e4}
+.fb.bad{background:#ffe3e8}
+.fb b{font-weight:700}
+.fb .sol{margin-top:8px}
+.fb pre{margin-top:6px;padding:10px 12px;background:var(--code);color:#efeaff;border-radius:10px;font-size:13.5px;line-height:1.6;overflow-x:auto}
+.fb .ans{font-weight:700}
+
+/* Results */
+.score{text-align:center;padding:26px 18px}
+.score .big{font-size:64px;font-weight:700;line-height:1}
+.score .pct{font-size:20px;font-weight:600;margin:4px 0 12px}
+.score .msg{font-size:20px;font-weight:500;margin:0 0 6px}
+.res-actions{display:grid;gap:14px;margin:22px 0}
+.missed h3{font-size:20px;margin:0 0 12px}
+.m-item{background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:12px 14px;margin-bottom:12px;box-shadow:0 4px 0 var(--ink)}
+.m-item p{margin:0 0 6px;font-weight:600;white-space:pre-line}
+.m-item pre{padding:8px 10px;background:var(--code);color:#efeaff;border-radius:10px;font-size:13px;line-height:1.55;overflow-x:auto}
+.m-item .a{font-weight:700}
+
+/* Confetti */
+.conf{position:fixed;top:-30px;z-index:50;font-size:26px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.9}}
+
+@media (min-width:640px){.q{font-size:24px}.hero h1{font-size:54px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.conf{display:none}}
+</style>
+</head>
+<body>
+
+<!-- Start -->
+<section id="start" class="screen on">
+  <div class="hero">
+    <p id="hi" class="sub"></p>
+    <h1>Comprog1 Exam</h1>
+    <p class="sub">Control Structures: selection, repetition, and branching</p>
+    <div class="win">
+      <div class="dots"><i></i><i></i><i></i></div>
+<pre><span class="kw">while</span> (!ready) {
+    <span class="fn">review</span>();
+}
+<span class="fn">startExam</span>(<span class="str">"you got this"</span>);</pre>
+    </div>
+    <div class="facts" id="facts"></div>
+    <button class="btn" id="go" type="button">Start exam</button>
+    <p class="tip">On a phone, drag a piece into place, or tap it to drop it into the next empty spot. Tap a placed piece to take it back.</p>
+  </div>
+</section>
+
+<!-- Quiz -->
+<section id="quiz" class="screen" style="padding:0;max-width:none">
+  <div class="top">
+    <button class="x" id="quit" type="button" aria-label="Quit exam">✕</button>
+    <div class="bar"><i id="fill"></i></div>
+    <span id="count">1/1</span>
+  </div>
+  <div class="wrap"><div class="card" id="card"></div></div>
+  <div class="dock"><button class="btn" id="act" type="button" disabled>Check</button></div>
+</section>
+
+<!-- Result -->
+<section id="result" class="screen">
+  <div class="card score">
+    <div id="emoji" style="font-size:46px"></div>
+    <div class="big" id="big"></div>
+    <div class="pct" id="pct"></div>
+    <p class="msg" id="msg"></p>
+  </div>
+  <div class="res-actions">
+    <button class="btn" id="retry" type="button">Retry missed questions</button>
+    <button class="btn alt" id="again" type="button">Start over</button>
+  </div>
+  <div class="missed" id="missed"></div>
+</section>
+
+<script>
+/* Put her name here to show a greeting on the start screen, e.g. const NAME = "Ana"; */
+const NAME = "";
+
+/* ---------- Questions (wording from 06 Handout 1) ---------- */
+const MCQ = [
+ {q:"Java supports the following types of control statements:",
+  a:"Selection, Repetition, and Branching",
+  w:["Input, Output, and Processing","Declaration, Assignment, and Execution","Sequence, Compilation, and Debugging"],
+  e:"Control statements are used to control the execution flow of the program."},
+ {q:"Which statements are selection statements?",
+  a:"if, if-else, and switch",
+  w:["while, do-while, and for","break, continue, and return","if, for, and return"],
+  e:"Selection statements are decision-making statements that include if, if-else, and switch statements."},
+ {q:"When is the else block executed?",
+  a:"Whenever the if statement is false",
+  w:["Whenever the if statement is true","Always, before the if statement","Only after a loop ends"],
+  e:"The else block is executed whenever the if statement is false."},
+ {q:"The switch statement lists the value of a variable or an expression against which primitive data types only?",
+  a:"byte, short, char, or int",
+  w:["float, double, or long","boolean, float, or double","long, float, or boolean"],
+  e:"It lists the value against a list of byte, short, char, or int primitive data types only."},
+ {q:"What happens if break is unused in a switch case?",
+  a:"The control passes to the next case statement and the remaining statements are also executed",
+  w:["The program stops with an error","Only the matching case is executed","The switch skips the default label"],
+  e:"If unused, the control passes to the next case statement and the remaining statements are also executed."},
+ {q:"Where must the default label be placed in a switch construct, if used?",
+  a:"It must always be the last option",
+  w:["It must always be the first option","Right after the first case","It cannot be used with case"],
+  e:"The default label must always be the last option in the switch construct if used."},
+ {q:"Which loop is a post-test loop?",
+  a:"do-while",
+  w:["while","for","if-else"],
+  e:"The do-while statement can be considered a post-test loop statement. The do block is executed first, then the condition is checked."},
+ {q:"Which loop is used when iterations are known in advance?",
+  a:"for",
+  w:["while","do-while","switch"],
+  e:"The for loop statement is used when iterations are known in advance. The while and do-while loops are used whenever the number of iterations is unknown."},
+ {q:"Which loop executes its body at least once, even if the condition is false in the first attempt?",
+  a:"do-while",
+  w:["while","for","if"],
+  e:"Even if the condition is false in the first attempt, the do block is executed at least once."},
+ {q:"A common mistake programmers should avoid in a for loop is:",
+  a:"Terminating the for loop with a semicolon",
+  w:["Enclosing the body in curly braces","Using a loop variable","Writing the increment expression"],
+  e:"Since the for statement ends with a semicolon, it becomes a self-executing for loop."},
+ {q:"What does the continue statement do?",
+  a:"Skips the current iteration of the loop and resumes to the next iteration",
+  w:["Breaks the innermost loop","Terminates the switch statement","Returns a value to the caller"],
+  e:"It is used in looping statements such as while, do-while, and for to skip the current iteration of the loop and resume to the next iteration."},
+ {q:"What does the return statement do?",
+  a:"Transfers the control to the caller of the method",
+  w:["Skips the current iteration of the loop","Breaks the outermost loop","Starts the loop again"],
+  e:"It transfers the control to the caller of the method and terminates the execution of the method."}
+];
+
+const TYPE = [
+ {q:"Type the keyword used for breaking loop executions. It also terminates the switch statements.",
+  ok:["break"], show:"break", hint:"Starts with b, 5 letters.",
+  e:"The break statement is used for breaking loop executions such as of while, do-while, and for."},
+ {q:"Type the keyword used to skip the current iteration of the loop.",
+  ok:["continue"], show:"continue", hint:"Starts with c, 8 letters.",
+  e:"continue; is used as the syntax of this statement."},
+ {q:"Fill in the blank: The ____ block is executed whenever the if statement is false.",
+  ok:["else"], show:"else", hint:"4 letters.",
+  e:"The else block is executed whenever the if statement is false."},
+ {q:"Type the name of the post-test loop.",
+  ok:["dowhile"], show:"do-while", hint:"Two words joined by a hyphen.",
+  e:"The do-while statement can be considered a post-test loop statement."},
+ {q:"Fill in the blank: The number of times the loop body is executed is called ____.",
+  ok:["iterations","iteration"], show:"iterations", hint:"Starts with i.",
+  e:"Iterations refer to the number of times the loop body is executed."},
+ {q:"What is the output?",
+  code:"int j=1;\ndo\n{\n    System.out.print(j);\n    j++;\n} while (j<=3);",
+  ok:["123"], show:"123", hint:"The do block runs before the condition is checked.",
+  e:"The do block is executed first and the current value is printed. This continues until j becomes greater than 3."},
+ {q:"What is the output?",
+  code:"int invar;\nfor (invar=1; invar<=4; invar++)\n{\n    System.out.print(invar*invar);\n}",
+  ok:["14916"], show:"1 4 9 16 (printed as 14916)", hint:"It prints the square of each number.",
+  e:"The for loop prints the square of the first four natural numbers: 1, 4, 9, and 16."}
+];
+
+const DND = [
+ {q:"Complete the switch statement.",
+  code:"[[0]] (variable-name)\n{\n[[1]] exprsn1:\n    statements;\n    [[2]];\n[[3]]:\n    statement;\n}",
+  ans:["switch","case","break","default"],
+  chips:["switch","case","break","default","continue","if"],
+  e:"The switch keyword is followed by the variable in parentheses. The break statement exits the body of the switch, and default runs if no case matches."},
+ {q:"Complete the if-else statement. It finds the higher value.",
+  code:"if (aNum1 > aNum2){\n    aMax = aNum1;\n}\n[[0]] {\n    aMax = aNum2;\n}",
+  ans:["else"],
+  chips:["else","case","default","while"],
+  e:"The else block is executed whenever the if statement is false."},
+ {q:"Complete the for loop. It prints the square of the first ten numbers.",
+  code:"int invar;\nfor (invar=1; [[0]]; [[1]])\n{\n    System.out.print(invar*invar);\n}",
+  ans:["invar<=10","invar++"],
+  chips:["invar<=10","invar++","invar--","invar>10"],
+  e:"A for statement has an initialization, a test expression, and an increment expression."},
+ {q:"Complete the do-while loop.",
+  code:"int j=1;\n[[0]]\n{\n    System.out.println(j);\n    j++;\n} [[1]] (j<=10);",
+  ans:["do","while"],
+  chips:["do","while","for","if"],
+  e:"First, the do block statement is executed, and then, the condition given in the while statement is checked."},
+ {q:"Exit the loop right after the data is found.",
+  code:"for(int i=1;i<num.length;i++)\n{\n    if(num[i]==search)\n    {\n        System.out.println(\"data is found\");\n        [[0]]\n    }\n}",
+  ans:["break;"],
+  chips:["break;","continue;","switch;","case;"],
+  e:"When the if statement results in true, break comes out of the loop immediately."},
+ {q:"Put the do-while loop in the right order. It prints 1 to 10.",
+  order:["int j=1;","do","{","System.out.println(j);","j++;","} while (j<=10);"],
+  e:"The do block is executed first, then the condition j<=10 is checked."},
+ {q:"Put the if-else statement in the right order.",
+  order:["int a=16;","if (a%2==0){","System.out.println(\"This is an even number\");","}","else {","System.out.println(\"It is an odd number\");","}"],
+  e:"The else block provides an alternative action when the if statement results in a false outcome."}
+];
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const PARTS = {
+  1:{icon:'🧠',name:'Part 1: Multiple choice'},
+  2:{icon:'⌨️',name:'Part 2: Type it'},
+  3:{icon:'🧩',name:'Part 3: Drag and drop'}
+};
+
+function allQuestions(){
+  const out=[];
+  MCQ.forEach(x=>out.push({part:1,kind:'mcq',prompt:x.q,a:x.a,w:x.w,e:x.e,solution:x.a}));
+  TYPE.forEach(x=>out.push({part:2,kind:'type',prompt:x.q,code:x.code,ok:x.ok,hint:x.hint,e:x.e,solution:x.show}));
+  DND.forEach(x=>{
+    if(x.order) out.push({part:3,kind:'order',prompt:x.q,lines:x.order,e:x.e,solution:x.order.join('\n')});
+    else out.push({part:3,kind:'blank',prompt:x.q,tpl:x.code,ans:x.ans,chips:x.chips,e:x.e,
+      solution:x.code.replace(/\[\[(\d+)\]\]/g,(m,i)=>x.ans[i])});
+  });
+  return out;
+}
+
+/* ---------- State ---------- */
+let Q=[], idx=0, score=0, missed=[], answered=false, cur=null, uid=0, drag=null;
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+  window.scrollTo(0,0);
+}
+
+/* ---------- Start ---------- */
+(function init(){
+  $('#hi').textContent = NAME ? `Hi ${NAME}, good luck!` : 'Good luck!';
+  $('#facts').innerHTML =
+    `<span>${MCQ.length} multiple choice</span><span>${TYPE.length} type it</span><span>${DND.length} drag and drop</span>`;
+  $('#go').onclick = () => startQuiz(allQuestions());
+  $('#quit').onclick = () => { if(confirm('Leave the exam? Your progress will be lost.')) show('start'); };
+  $('#again').onclick = () => show('start');
+  $('#retry').onclick = () => startQuiz(missed.slice());
+  $('#act').onclick = onAct;
+})();
+
+function startQuiz(list){
+  Q=list; idx=0; score=0; missed=[];
+  show('quiz'); renderQ();
+}
+
+/* ---------- Render a question ---------- */
+function tplHTML(tpl){
+  return esc(tpl).replace(/\[\[(\d+)\]\]/g,(m,i)=>`<span class="slot" data-i="${i}"></span>`);
+}
+function chipHTML(c){ return `<button type="button" class="chip" data-id="${c.id}">${esc(c.t)}</button>`; }
+
+function renderQ(){
+  const q=Q[idx]; answered=false; cur={};
+  $('#count').textContent=`${idx+1}/${Q.length}`;
+  $('#fill').style.width=(idx/Q.length*100)+'%';
+  const part=PARTS[q.part];
+  let h=`<div class="part"><span>${part.icon}</span>${part.name}</div><h2 class="q">${esc(q.prompt)}</h2>`;
+  if(q.kind==='type' && q.code){
+    h+=`<div class="win"><div class="dots"><i></i><i></i><i></i></div><pre>${esc(q.code)}</pre></div>`;
+  }
+  if(q.kind==='mcq'){
+    cur.opts=shuffle([q.a,...q.w]); cur.sel=-1;
+    h+=`<div class="opts">`+cur.opts.map((o,i)=>
+      `<button type="button" class="opt" data-i="${i}"><b>${'ABCD'[i]}</b><span>${esc(o)}</span></button>`).join('')+`</div>`;
+  } else if(q.kind==='type'){
+    h+=`<input id="ans" class="in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type your answer" aria-label="Your answer">
+        <button type="button" id="hint" class="link">Show a hint</button><div id="hintbox" class="hintbox" hidden></div>`;
+  } else {
+    const isOrder=q.kind==='order';
+    const answers=isOrder?q.lines:q.ans, texts=isOrder?q.lines:q.chips;
+    cur.ans=answers;
+    cur.chips=shuffle(texts.map(t=>({id:'c'+(uid++),t})));
+    if(isOrder && cur.chips.every((c,i)=>c.t===answers[i])) cur.chips.reverse();
+    cur.slots=answers.map(()=>null); cur.active=null;
+    h+=`<p class="how">${isOrder?'Drag each line into its place, or tap a line to fill the next empty spot.':'Drag a piece into the code, or tap a piece to fill the next empty spot.'}</p>`;
+    if(isOrder){
+      h+=`<div class="win"><div class="dots"><i></i><i></i><i></i></div><div class="lines">`+
+         answers.map((_,i)=>`<div class="oline"><span class="n">${i+1}</span><span class="slot wide" data-i="${i}"></span></div>`).join('')+
+         `</div></div>`;
+    } else {
+      h+=`<div class="win"><div class="dots"><i></i><i></i><i></i></div><pre>${tplHTML(q.tpl)}</pre></div>`;
+    }
+    h+=`<div class="bank" id="bank"></div>`;
+  }
+  h+=`<div id="fb"></div>`;
+  $('#card').innerHTML=h;
+
+  if(q.kind==='mcq'){
+    $('#card').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      if(answered) return;
+      cur.sel=+b.dataset.i;
+      $('#card').querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));
+      updateBtn();
+    });
+  } else if(q.kind==='type'){
+    const inp=$('#ans');
+    inp.addEventListener('input',updateBtn);
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('#act').disabled){ e.preventDefault(); inp.blur(); onAct(); } });
+    $('#hint').onclick=()=>{ const hb=$('#hintbox'); hb.hidden=false; hb.textContent='Hint: '+q.hint; };
+  } else {
+    refreshDnd();
+  }
+  updateBtn();
+}
+
+function updateBtn(){
+  const b=$('#act'); if(answered) return;
+  const q=Q[idx]; let ready=false;
+  if(q.kind==='mcq') ready=cur.sel>=0;
+  else if(q.kind==='type') ready=$('#ans').value.trim().length>0;
+  else ready=cur.slots.every(Boolean);
+  b.disabled=!ready; b.textContent='Check';
+}
+
+/* ---------- Drag and drop (pointer events: works with mouse, touch, and pen) ---------- */
+function chipById(id){ return cur.chips.find(c=>c.id===id); }
+function refreshDnd(){
+  document.querySelectorAll('#card .slot').forEach(el=>{
+    const i=+el.dataset.i, id=cur.slots[i];
+    el.innerHTML=id?chipHTML(chipById(id)):'';
+    el.classList.toggle('filled',!!id);
+    el.classList.toggle('active',cur.active===i && !id);
+  });
+  $('#bank').innerHTML=cur.chips.filter(c=>!cur.slots.includes(c.id)).map(chipHTML).join('')
+    || '<span class="empty">All pieces are placed</span>';
+  updateBtn();
+}
+function unplace(id){ cur.slots=cur.slots.map(x=>x===id?null:x); }
+function place(id,i){ unplace(id); cur.slots[i]=id; cur.active=null; }
+function tapChip(id){
+  if(cur.slots.includes(id)){ unplace(id); return; }
+  let t=(cur.active!==null && !cur.slots[cur.active]) ? cur.active : cur.slots.indexOf(null);
+  if(t>-1) place(id,t);
+}
+function dropTarget(x,y){
+  const el=document.elementFromPoint(x,y); if(!el) return null;
+  const s=el.closest('#card .slot'); if(s) return {slot:+s.dataset.i};
+  if(el.closest('#bank')) return {bank:true};
+  return null;
+}
+function clearHot(){ document.querySelectorAll('#card .slot.hot').forEach(s=>s.classList.remove('hot')); }
+
+$('#card').addEventListener('pointerdown',e=>{
+  const chip=e.target.closest('.chip'); if(!chip||answered) return;
+  if(e.pointerType==='mouse' && e.button!==0) return;
+  drag={id:chip.dataset.id,el:chip,x:e.clientX,y:e.clientY,moved:false,pid:e.pointerId,ghost:null,cx:0,cy:0};
+  e.preventDefault();
+});
+window.addEventListener('pointermove',e=>{
+  if(!drag||e.pointerId!==drag.pid) return;
+  if(!drag.moved){
+    if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<8) return;
+    drag.moved=true;
+    const g=drag.el.cloneNode(true); g.classList.add('ghost'); g.removeAttribute('data-id');
+    document.body.appendChild(g); drag.ghost=g; drag.el.classList.add('lifted');
+  }
+  const g=drag.ghost, w=g.offsetWidth, h=g.offsetHeight;
+  const cx=e.clientX, cy=e.clientY-(e.pointerType==='touch'?38:0);
+  g.style.transform=`translate(${cx-w/2}px,${cy-h/2}px)`;
+  drag.cx=cx; drag.cy=cy;
+  clearHot();
+  const t=dropTarget(cx,cy);
+  if(t && t.slot!==undefined){ const s=document.querySelector(`#card .slot[data-i="${t.slot}"]`); if(s) s.classList.add('hot'); }
+  e.preventDefault();
+},{passive:false});
+function endDrag(e,cancelled){
+  if(!drag||e.pointerId!==drag.pid) return;
+  const d=drag; drag=null;
+  if(d.ghost) d.ghost.remove();
+  d.el.classList.remove('lifted'); clearHot();
+  if(answered||cancelled) return;
+  if(d.moved){
+    const t=dropTarget(d.cx,d.cy);
+    if(t && t.slot!==undefined) place(d.id,t.slot);
+    else if(t && t.bank) unplace(d.id);
+  } else tapChip(d.id);
+  refreshDnd();
+}
+window.addEventListener('pointerup',e=>endDrag(e,false));
+window.addEventListener('pointercancel',e=>endDrag(e,true));
+$('#card').addEventListener('click',e=>{
+  if(answered||!cur||!cur.slots) return;
+  const chip=e.target.closest('.chip');
+  if(chip){ if(e.detail===0){ tapChip(chip.dataset.id); refreshDnd(); } return; }   // keyboard activation
+  const s=e.target.closest('.slot');
+  if(s){ const i=+s.dataset.i; if(!cur.slots[i]){ cur.active=cur.active===i?null:i; refreshDnd(); } }
+});
+
+/* ---------- Check / Next ---------- */
+const PRAISE=['Correct!','Nice!','You got it!','Yes!'];
+function onAct(){
+  if(answered){
+    idx++; if(idx>=Q.length) showResult(); else { renderQ(); window.scrollTo(0,0); }
+    return;
+  }
+  const q=Q[idx]; let ok=false;
+  if(q.kind==='mcq'){
+    ok=cur.opts[cur.sel]===q.a;
+    $('#card').querySelectorAll('.opt').forEach((b,i)=>{
+      b.disabled=true;
+      if(cur.opts[i]===q.a) b.classList.add('right');
+      else if(i===cur.sel) b.classList.add('wrong');
+    });
+  } else if(q.kind==='type'){
+    const inp=$('#ans'); ok=q.ok.includes(norm(inp.value));
+    inp.readOnly=true; inp.classList.add(ok?'right':'wrong');
+  } else {
+    ok=cur.slots.every((id,i)=>chipById(id).t===cur.ans[i]);
+    document.querySelectorAll('#card .slot').forEach(s=>{
+      const i=+s.dataset.i; s.classList.remove('active');
+      s.classList.add(chipById(cur.slots[i]).t===cur.ans[i]?'right':'wrong');
+    });
+  }
+  answered=true;
+  if(ok) score++; else missed.push(q);
+
+  let fb;
+  if(ok){
+    fb=`<div class="fb good"><b>${PRAISE[Math.floor(Math.random()*PRAISE.length)]}</b> ${esc(q.e)}</div>`;
+  } else {
+    const sol=(q.kind==='mcq'||q.kind==='type')&&!/\n/.test(q.solution)
+      ? `<div class="sol">Answer: <span class="ans">${esc(q.solution)}</span></div>`
+      : `<div class="sol">Answer:<pre>${esc(q.solution)}</pre></div>`;
+    fb=`<div class="fb bad"><b>Not quite.</b> ${esc(q.e)}${sol}</div>`;
+  }
+  $('#fb').innerHTML=fb;
+  const b=$('#act'); b.disabled=false; b.textContent=idx===Q.length-1?'See results':'Next question';
+  setTimeout(()=>$('#fb').scrollIntoView({block:'nearest',behavior:'smooth'}),50);
+}
+
+/* ---------- Results ---------- */
+function showResult(){
+  $('#fill').style.width='100%';
+  const total=Q.length, pct=Math.round(score/total*100);
+  let emoji,msg;
+  if(pct>=90){emoji='👑';msg='Amazing! You nailed control structures.';}
+  else if(pct>=70){emoji='🎉';msg='Great job! You are almost perfect.';}
+  else if(pct>=50){emoji='🌸';msg='Good effort. Review a little and try again.';}
+  else {emoji='💪';msg='You are getting there. Review the reviewer and retry.';}
+  $('#emoji').textContent=emoji;
+  $('#big').textContent=`${score}/${total}`;
+  $('#pct').textContent=`${pct}%`;
+  $('#msg').textContent=msg;
+  $('#retry').style.display=missed.length?'block':'none';
+  $('#missed').innerHTML=missed.length
+    ? `<h3>Review these (${missed.length})</h3>`+missed.map(q=>{
+        const multi=/\n/.test(q.solution)||q.kind==='blank'||q.kind==='order';
+        return `<div class="m-item"><p>${esc(q.prompt)}</p>`+
+          (multi?`<pre>${esc(q.solution)}</pre>`:`<div>Answer: <span class="a">${esc(q.solution)}</span></div>`)+`</div>`;
+      }).join('')
+    : '';
+  show('result');
+  if(pct>=70) confetti();
+}
+function confetti(){
+  const set=['🎉','✨','💜','🌸','⭐'];
+  for(let i=0;i<36;i++){
+    const s=document.createElement('span'); s.className='conf'; s.textContent=set[i%set.length];
+    s.style.left=Math.random()*100+'vw';
+    s.style.animationDuration=(2.2+Math.random()*2.2)+'s';
+    s.style.animationDelay=(Math.random()*0.8)+'s';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),5500);
+  }
+}
+</script>
+</body>
+</html>
