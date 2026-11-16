@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff7fb">
+<title>ComputingReview5&amp;6</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%98%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2250; --paper:#fff7fb; --pink:#ff7eb6; --lilac:#d4c6ff; --mint:#43d9a0;
+  --coral:#ff5d73; --sun:#ffd666;
+  --tabs-h:calc(56px + env(safe-area-inset-top));
+  --sans:'Fredoka',ui-rounded,'SF Pro Rounded',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:80px;scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--sans);font-size:17px;line-height:1.5;color:var(--ink);
+  background-color:var(--paper);
+  background-image:radial-gradient(#ead9ff 1.4px,transparent 1.4px);background-size:20px 20px;
+  min-height:100vh;
+}
+:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+
+/* Page tabs */
+.tabs{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+  height:var(--tabs-h);padding:env(safe-area-inset-top) 16px 0;
+  background:var(--paper);border-bottom:2.5px solid var(--ink);
+  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:none;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink);
+  font-weight:600;font-size:16px;padding:6px 14px;background:#fff;
+  border:2.5px solid var(--ink);border-radius:999px;box-shadow:0 3px 0 var(--ink);
+  transition:transform .08s,box-shadow .08s;
+}
+.tab:first-child{margin-left:auto}
+.tab:last-child{margin-right:auto}
+.tab:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.tab.on{background:var(--pink)}
+@media (max-width:430px){.tabs{gap:8px;padding-left:12px;padding-right:12px}.tab{font-size:15px;padding:6px 11px}.tab span[aria-hidden]{display:none}}
+
+/* Layout */
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 70px}
+h1{font-size:40px;line-height:1.05;margin:6px 0 6px;font-weight:700;overflow-wrap:anywhere}
+.lead{margin:0;font-size:18px;font-weight:500}
+.jump{display:grid;gap:10px;margin:18px 0 4px}
+.pill{
+  display:block;text-decoration:none;color:var(--ink);font-weight:600;padding:11px 16px;background:#fff;
+  border:2.5px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink);
+  transition:transform .08s,box-shadow .08s;
+}
+.pill:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.pill small{display:block;font-weight:500;font-size:14px;opacity:.75}
+
+.part{
+  margin:34px 0 16px;padding:16px 18px;background:var(--ink);color:#fff;border-radius:20px;
+  border:2.5px solid var(--ink);box-shadow:0 5px 0 var(--pink);
+}
+.part h2{margin:0;font-size:26px;line-height:1.15;font-weight:700}
+.part span{display:inline-block;margin-top:6px;background:var(--sun);color:var(--ink);font-weight:600;font-size:14px;padding:2px 12px;border-radius:999px}
+
+.sec{background:#fff;border:2.5px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding:18px;margin-bottom:22px}
+.sec h3{display:inline-block;margin:0 0 12px;font-size:20px;line-height:1.2;font-weight:700;background:var(--sun);border:2.5px solid var(--ink);border-radius:12px;padding:3px 12px}
+.sec h4{margin:16px 0 6px;font-size:18px;font-weight:700;color:#5b3fd1}
+.sec p{margin:0 0 10px}
+.sec p:last-child{margin-bottom:0}
+.term{font-weight:700}
+
+/* Rows */
+.rows{list-style:none;margin:0;padding:0}
+.rows>li{padding:11px 0;border-top:2px dashed #dcd1f7}
+.rows>li:first-child{border-top:0;padding-top:2px}
+.rows>li:last-child{padding-bottom:0}
+.rows .sub{margin:8px 0 0 12px;padding-left:12px;border-left:4px solid var(--lilac)}
+.def{display:flex;gap:12px;align-items:flex-start}
+.abbr{
+  flex:none;min-width:58px;height:38px;padding:0 8px;display:grid;place-items:center;
+  background:var(--lilac);border:2.5px solid var(--ink);border-radius:11px;font-weight:700;font-size:16px;
+}
+.def .txt{flex:1;min-width:0}
+.emo{flex:none;width:44px;height:38px;display:grid;place-items:center;font-size:22px;background:#fff0f7;border:2.5px solid var(--ink);border-radius:11px}
+
+/* OSI stack */
+.osi{display:grid;gap:8px;margin:4px 0 0}
+.layer{
+  display:grid;grid-template-columns:30px 112px 1fr;gap:10px;align-items:center;
+  border:2.5px solid var(--ink);border-radius:14px;padding:8px 12px;
+}
+.layer .n{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#fff;border:2.5px solid var(--ink);font-weight:700;font-size:14px}
+.layer .nm{font-weight:700}
+.layer .fn{font-size:16px;line-height:1.35}
+.l7{background:#ffe9a6}.l6{background:#ffcfe3}.l5{background:#e4dbff}.l4{background:#c9f0e0}
+.l3{background:#cfe6ff}.l2{background:#fff3c4}.l1{background:#fff}
+@media (max-width:420px){
+  .layer{grid-template-columns:30px 1fr;row-gap:2px}
+  .layer .fn{grid-column:2}
+}
+
+/* Wired vs wireless */
+.cmp{display:grid;gap:14px;margin-top:12px}
+@media (min-width:560px){.cmp{grid-template-columns:1fr 1fr}}
+.cbox{border:2.5px solid var(--ink);border-radius:16px;padding:12px 14px;background:#fffdf4}
+.cbox h5{margin:0 0 6px;font-size:18px;font-weight:700}
+.cbox b.k{display:block;margin:8px 0 2px;font-size:15px}
+.cbox ul{list-style:none;margin:0;padding:0}
+.cbox li{position:relative;padding:2px 0 2px 24px;font-size:16px;line-height:1.35}
+.cbox li::before{position:absolute;left:0;top:2px;font-weight:700}
+.cbox .good li::before{content:"✓";color:#13a874}
+.cbox .bad li::before{content:"✗";color:var(--coral)}
+
+@media (min-width:640px){h1{font-size:52px}.part h2{font-size:30px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="tabs" aria-label="Study pages">
+  <a class="tab" href="index.html"><span aria-hidden="true">✏️</span>Comprog1 Exam</a>
+  <a class="tab on" href="computing-review-5-6.html" aria-current="page"><span aria-hidden="true">📘</span>ComputingReview5&amp;6</a>
+</nav>
+
+<main class="wrap">
+  <h1>ComputingReview5&amp;6</h1>
+  <p class="lead">IT2221 reviewer</p>
+
+  <div class="jump">
+    <a class="pill" href="#p05">The Vast Network<small>05 Handout 1</small></a>
+    <a class="pill" href="#p06">When the Network and Internet Fails<small>06 Handout 1</small></a>
+  </div>
+
+  <!-- ===================== 05 ===================== -->
+  <header class="part" id="p05">
+    <h2>The Vast Network</h2>
+    <span>05 Handout 1</span>
+  </header>
+
+  <section class="sec">
+    <h3>Key Concepts of Computer Networking</h3>
+    <p><span class="term">Computer Networking</span> links computers for shared resources through the internet.</p>
+
+    <h4>Network Categories based on Geography</h4>
+    <p>Networks are categorized based on their geographic scope:</p>
+    <ul class="rows">
+      <li class="def"><span class="abbr">PAN</span><div class="txt"><span class="term">Personal Area Network (PAN)</span> – The smallest type of network with a limited span interconnects compatible personal devices. Examples include wireless earphones-to-smartphone and computer-to-printer connections.</div></li>
+      <li class="def"><span class="abbr">LAN</span><div class="txt"><span class="term">Local Area Network (LAN)</span> – This is used to interconnect and share computer resources in an establishment such as a corporate building, house, or several buildings in a limited area.</div></li>
+      <li class="def"><span class="abbr">CAN</span><div class="txt"><span class="term">Campus Area Network (CAN)</span> – An enterprise network covering multiple buildings in a campus environment, including universities and large organizations.</div></li>
+      <li class="def"><span class="abbr">MAN</span><div class="txt"><span class="term">Metropolitan Area Network (MAN)</span> – This covers multiple city buildings, traffic lights, and parking meters, connecting wirelessly as a metropolitan area network.</div></li>
+      <li class="def"><span class="abbr">WAN</span><div class="txt"><span class="term">Wide Area Network (WAN)</span> – A much larger network covering vast areas, such as cities, provinces, and countries. WAN can also be a bigger network consisting of LANs and MANs.</div></li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h3>Network Architecture</h3>
+    <p>It is a diagram displaying the structure of network devices and services to serve the clients' connectivity needs.</p>
+    <h4>Common Types of Network Architecture</h4>
+    <p>Here are the three common types of enterprise networks:</p>
+    <ul class="rows">
+      <li><span class="term">Access networks</span> in campuses and branches bring users and devices together, such as linking employees in a corporate building.</li>
+      <li><span class="term">Networks for data centers</span> in a company link multiple servers with data and applications and make them easily accessible to users.</li>
+      <li><span class="term">Wide-area networks (WANs)</span> connect users to programs and services, such as hospital employees connecting to health applications.</li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h3>The Open Systems Interconnection Model</h3>
+    <p>The Open Systems Interconnection <span class="term">(OSI)</span> reference model of the International Organization for Standardization was developed in 1984 as an open standard for every communication system to allow the interlinking of different types of networks. The OSI reference model has seven layers.</p>
+    <h4>Summary of the OSI Layers</h4>
+    <div class="osi">
+      <div class="layer l7"><span class="n">7</span><span class="nm">Application</span><span class="fn">Provides support for applications</span></div>
+      <div class="layer l6"><span class="n">6</span><span class="nm">Presentation</span><span class="fn">Manages protocol conversion and data translation</span></div>
+      <div class="layer l5"><span class="n">5</span><span class="nm">Session</span><span class="fn">Establishes, manages, and terminates sessions</span></div>
+      <div class="layer l4"><span class="n">4</span><span class="nm">Transport</span><span class="fn">Manages end-to-end delivery to ensure error-free packets</span></div>
+      <div class="layer l3"><span class="n">3</span><span class="nm">Network</span><span class="fn">Provides addressing and routing decisions</span></div>
+      <div class="layer l2"><span class="n">2</span><span class="nm">Data Link</span><span class="fn">Assigned for the flow of data</span></div>
+      <div class="layer l1"><span class="n">1</span><span class="nm">Physical</span><span class="fn">Handles signal and media</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h3>Network Types and Devices</h3>
+    <p><span class="term">Wired Network</span> uses cabling and connectors to initiate network connections.</p>
+    <p><span class="term">Wireless Network</span> uses radio signals to initiate network connections. It is the most common home network configuration today.</p>
+    <div class="cmp">
+      <div class="cbox">
+        <h5>Wired</h5>
+        <b class="k">Advantages</b>
+        <ul class="good"><li>Faster network data transfer speed</li><li>Inexpensive setup</li><li>Not susceptible to outside interference</li></ul>
+        <b class="k">Disadvantages</b>
+        <ul class="bad"><li>Specialized tools for cable connections</li><li>Labor-intensive</li></ul>
+      </div>
+      <div class="cbox">
+        <h5>Wireless</h5>
+        <b class="k">Advantages</b>
+        <ul class="good"><li>User mobility</li><li>Simple installation</li></ul>
+        <b class="k">Disadvantages</b>
+        <ul class="bad"><li>Security issues</li><li>Slower data transfer</li></ul>
+      </div>
+    </div>
+
+    <h4>Wired Network Devices</h4>
+    <ul class="rows">
+      <li><span class="term">LAN Ethernet Cable</span> – connects devices within a local area network.</li>
+      <li><span class="term">Hub</span> – interconnects networking devices but risks the broadcast of data it receives to all devices connected to it.</li>
+      <li><span class="term">Switch</span> – initiates a direct connection from the sender to the destination bypassing the data traffic to ensure data privacy, unlike a hub.</li>
+      <li><span class="term">Cable Modem</span> – uses a cable connection to create a broadband network connection from a home network to the internet service provider (ISP).</li>
+      <li><span class="term">Servers</span> – provide resources, data, services, and programs to other computers or clients over a network.</li>
+      <li><span class="term">Firewall</span> – a security device that monitors and secures incoming and outgoing network traffic based on established security policies.</li>
+    </ul>
+
+    <h4>Wireless Network Devices</h4>
+    <ul class="rows">
+      <li><span class="term">Wireless Access Point</span> – connects wireless devices and provides a connection to wired LANs.</li>
+      <li><span class="term">Wireless Router</span> – consists of a router, switch, and wireless access point that uses radio frequency to link networking devices.</li>
+      <li><span class="term">Wi-Fi Modem</span> – combines the functionality of a modem and a router, thus making it a convenient source for Internet connectivity.</li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h3>Various Network Topologies</h3>
+    <p>The <span class="term">networking protocol</span> is the rule for users to exchange information. At the same time, the <span class="term">network topology</span> is the physical and logical arrangement of nodes such as a switch or hub and connections in a network.</p>
+    <ul class="rows">
+      <li><span class="term">Point-to-Point</span> – the simplest network topology where two devices, like a computer or router, are connected directly.</li>
+      <li><span class="term">Token Ring</span> – Its deterministic nature ensures access to message transmissions at regular or fixed time intervals for each connected station.</li>
+      <li><span class="term">Bus</span> – occurs when computers share the media for data transmission using a coaxial cable, preventing data transmission from being extremely bandwidth efficient.</li>
+      <li><span class="term">Star</span> – the most common networking topology in LANs today, where all the devices connect to a central switch or hub.</li>
+      <li><span class="term">Mesh</span> – it is when the networking devices are directly connected where several paths exist between the end devices.
+        <div class="sub">If a direct path exists from each end device to other end devices in the network, it is a <span class="term">fully meshed</span> topology. However, it is a <span class="term">partially meshed</span> topology if multiple paths are observed between the end devices.</div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== 06 ===================== -->
+  <header class="part" id="p06">
+    <h2>When the Network and Internet Fails</h2>
+    <span>06 Handout 1</span>
+  </header>
+
+  <section class="sec">
+    <h3>Internet Privacy</h3>
+    <p><span class="term">Internet Privacy</span> deals with the fundamental human rights of a person’s privacy on the Internet, including the rights to the privacy of an owner's displayed, stored, and confidential information.</p>
+    <h4>Different Techniques to Protect Internet Privacy</h4>
+    <ul class="rows">
+      <li><span class="term">Securing Web Browser</span> – Better check reviews and read about their security features before using a web browser.</li>
+      <li><span class="term">Using a Virtual Private Network (VPN)</span> – It is the best way to have Internet privacy. It does not just change the IP address; it also protects incoming and outgoing Internet traffic with extensive encryption.</li>
+      <li><span class="term">Double-checking Unfamiliar Links</span> – Never trust links from suspicious emails, sketchy websites, and advertisements. Double-check the URL to see if it has the correct format before clicking.</li>
+      <li><span class="term">Limited Sharing on Social Media</span> – Threats can be avoided by simply limiting too personal posts on social media.</li>
+      <li><span class="term">Using Multi-factor Authentication</span> – Multi-factor or two-factor authentication is an added verification step besides a conventional password.</li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h3>Network Security</h3>
+    <p>It ensures the integrity, confidentiality, and accessibility of computer networks.</p>
+    <h4>Network Technologies</h4>
+    <ul class="rows">
+      <li><span class="term">Firewall</span> – it serves as a “wall,” either hardware or software, between the trusted internal and untrusted external Internet by only allowing the verified traffic based on the predetermined set of rules in place.</li>
+      <li><span class="term">Intrusion Detection System (IDS)</span> – It is a software or a device for closely monitoring a network for any malicious activity or intrusion at the network or the host.
+        <div class="sub"><span class="term">Network IDS</span> – a <em>signature-based detection method</em> is used wherein it seeks certain patterns of known malicious instruction sequences.</div>
+        <div class="sub"><span class="term">Host intrusion detection system (HIDS)</span> – is used to run on the individual hosts of a network; therefore, it only monitors the inflow and outflow of traffic at the host.</div>
+      </li>
+      <li><span class="term">Wi-Fi Protected Access 3 (WPA3)</span> – It is the latest wireless network security certificate protocol by the Wi-Fi alliance. It focuses its filtering at the “<em>entry</em>” when a new device requests to connect to the network.</li>
+      <li><span class="term">Virtual Private Network (VPN)</span> – It connects any remote device to an enterprise server wherein company data is hosted.</li>
+      <li><span class="term">Email Security</span> – The most effective security methods include email spam filters with deep learning to filter domains that send spam.</li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h3>Consequences of Internet and Network Failure</h3>
+    <ul class="rows">
+      <li class="def"><span class="emo" aria-hidden="true">💸</span><div class="txt"><span class="term">Revenue Loss</span> – One of the most significant consequences companies face during an internet, and network downtime is revenue loss.</div></li>
+      <li class="def"><span class="emo" aria-hidden="true">🔧</span><div class="txt"><span class="term">Maintenance Cost</span> – Repairing damaged internet and network lines consumes both time and maintenance costs, including acquiring new cables and upgraded network devices for replacement.</div></li>
+      <li class="def"><span class="emo" aria-hidden="true">📉</span><div class="txt"><span class="term">Lesser Productivity</span> – Internet and network failure significantly affect productivity as tasks heavily rely on the internet.</div></li>
+      <li class="def"><span class="emo" aria-hidden="true">🏷️</span><div class="txt"><span class="term">Damaged Reputation</span> – Reoccurring internet and network problems could be interpreted as negligence, reflecting bad management and maintenance.</div></li>
+      <li class="def"><span class="emo" aria-hidden="true">⚖️</span><div class="txt"><span class="term">Legal Repercussions</span> – Failures in operations and transactions mean failure to meet agreed-upon outputs and deliverables on time. It could lead to legal repercussions, especially when crucial outputs are at risk.</div></li>
+    </ul>
+  </section>
+</main>
+
+</body>
+</html>
